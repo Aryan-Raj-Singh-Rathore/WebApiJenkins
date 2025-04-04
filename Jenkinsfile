@@ -13,12 +13,16 @@ pipeline {
                 git branch: 'master', url: 'https://github.com/Aryan-Raj-Singh-Rathore/WebApiJenkins.git'
             }
         }
-        stage('Terraform Init') {
+         stage('Terraform Init') {
             steps {
                 withCredentials([azureServicePrincipal(credentialsId: AZURE_CREDENTIALS_ID)]) {
                     bat """
-                    az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+                    az login --service-principal -u %AZURE_CLIENT_ID% -p %AZURE_CLIENT_SECRET% --tenant %AZURE_TENANT_ID%
+                    echo "Checking Terraform Installation..."
+                    terraform -v
+                    echo "Navigating to Terraform Directory: $TF_WORKING_DIR"
                     cd $TF_WORKING_DIR
+                    echo "Initializing Terraform..."
                     terraform init
                     """
                 }
@@ -27,25 +31,26 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                withCredentials([azureServicePrincipal(credentialsId: AZURE_CREDENTIALS_ID)]) {
-                    bat """
-                    cd $TF_WORKING_DIR
-                    terraform plan -out=tfplan
-                    """
-                }
+                bat """
+                echo "Navigating to Terraform Directory: $TF_WORKING_DIR"
+                cd $TF_WORKING_DIR
+                echo "Generating Terraform Plan..."
+                terraform plan -out=tfplan
+                """
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                withCredentials([azureServicePrincipal(credentialsId: AZURE_CREDENTIALS_ID)]) {
-                    bat """
-                    cd $TF_WORKING_DIR
-                    terraform apply -auto-approve tfplan
-                    """
-                }
+                bat """
+                echo "Navigating to Terraform Directory: $TF_WORKING_DIR"
+                cd $TF_WORKING_DIR
+                echo "Applying Terraform Plan..."
+                terraform apply -auto-approve tfplan
+                """
             }
         }
+    }
 
         stage('Build') {
             steps {

@@ -13,6 +13,21 @@ pipeline {
             }
         }
 
+        stage('Terraform Init & Apply') {
+            steps {
+                withCredentials([azureServicePrincipal(credentialsId: AZURE_CREDENTIALS_ID)]) {
+                    bat "az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID"
+                }
+                dir(TF_WORKING_DIR) {
+                    bat 'terraform init'
+                    bat 'terraform plan -out=tfplan'
+                    bat 'terraform apply -auto-approve'
+                }
+            }
+        }
+
+
+
         stage('Build') {
             steps {
                 bat 'dotnet restore'

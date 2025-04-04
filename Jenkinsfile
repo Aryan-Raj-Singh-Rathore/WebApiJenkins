@@ -3,13 +3,47 @@ pipeline {
     environment {
         AZURE_CREDENTIALS_ID = 'jenkins-pipeline-sp'
         RESOURCE_GROUP = 'webservicerg'
-        APP_SERVICE_NAME = 'RathoreWebApp01'
+        APP_SERVICE_NAME = 'RathoreeeWebApp01'
+        TF_WORKING_DIR='.'
     }
 
     stages {
         stage('Checkout Code') {
             steps {
                 git branch: 'master', url: 'https://github.com/Aryan-Raj-Singh-Rathore/WebApiJenkins.git'
+            }
+        }
+        stage('Terraform Init') {
+            steps {
+                withCredentials([azureServicePrincipal(credentialsId: AZURE_CREDENTIALS_ID)]) {
+                    bat """
+                    az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+                    cd $TF_WORKING_DIR
+                    terraform init
+                    """
+                }
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                withCredentials([azureServicePrincipal(credentialsId: AZURE_CREDENTIALS_ID)]) {
+                    bat """
+                    cd $TF_WORKING_DIR
+                    terraform plan -out=tfplan
+                    """
+                }
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                withCredentials([azureServicePrincipal(credentialsId: AZURE_CREDENTIALS_ID)]) {
+                    bat """
+                    cd $TF_WORKING_DIR
+                    terraform apply -auto-approve tfplan
+                    """
+                }
             }
         }
 

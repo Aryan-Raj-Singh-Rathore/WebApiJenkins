@@ -33,7 +33,7 @@ resource "azurerm_app_service" "app" {
   name                = "RathoreeeWebApp03"
   location            = azurerm_resource_group.web_rg.location
   resource_group_name = azurerm_resource_group.web_rg.name
-  app_service_plan_id = azurerm_service_plan.Web_plan.id
+  app_service_plan_id = azurerm_service_plan.plan.id
 
   site_config {
     always_on = true

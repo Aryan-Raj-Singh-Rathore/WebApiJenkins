@@ -30,12 +30,13 @@ resource "azurerm_app_service_plan" "plan" {
   name                = "WebPlan03"
   location            = azurerm_resource_group.web_rg.location
   resource_group_name = azurerm_resource_group.web_rg.name
+  kind = "Windows"
+  reserved = false
 
   sku {
     tier = "Basic"
     size = "B1"
   }
-
 }
 
 resource "azurerm_app_service" "app" {

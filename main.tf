@@ -19,26 +19,25 @@ resource "azurerm_resource_group" "web_rg" {
   location = "Central India"
 }
 
-resource "azurerm_service_plan" "Web_plan" {
-  name                = "webPlan01"
+resource "azurerm_app_service_plan" "plan" {
+  name                = "WebPlan03"
   location            = azurerm_resource_group.web_rg.location
   resource_group_name = azurerm_resource_group.web_rg.name
-  os_type             = "Windows"
 
-  sku_name = "B1"
-
+  sku {
+    tier = "Basic"
+    size = "B1"
+  }
 }
-resource "azurerm_app_service" "web_app" {
-  name                = "RathoreeeWebApp01"
+resource "azurerm_app_service" "app" {
+  name                = "RathoreeeWebApp03"
   location            = azurerm_resource_group.web_rg.location
   resource_group_name = azurerm_resource_group.web_rg.name
   app_service_plan_id = azurerm_service_plan.Web_plan.id
 
   site_config {
-    dotnet_framework_version = "v6.0" # Change to your preferred version
-    scm_type                 = "LocalGit"
+    always_on = true
   }
-
   app_settings = {
     "WEBSITE_RUN_FROM_PACKAGE" = "0"
   }

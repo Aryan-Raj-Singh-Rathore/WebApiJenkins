@@ -1,3 +1,4 @@
+
 terraform {
   required_providers {
     azurerm = {
@@ -9,46 +10,35 @@ terraform {
 }
 
 provider "azurerm" {
-  subscription_id = var.subscription_id
-  tenant_id       = var.tenant_id
-  client_id       = var.client_id
-  client_secret   = var.client_secret
+  subscription_id = "61bd38d2-51fa-4243-9689-7f55df510fc1"
+  tenant_id       = "b0b76d6e-14b7-4c08-8657-a19ef23b3b0b"
   features {}
 }
-
-variable "subscription_id" {}
-variable "tenant_id" {}
-variable "client_id" {}
-variable "client_secret" {}
 
 resource "azurerm_resource_group" "web_rg" {
   name     = "WebServiceRG"
   location = "Central India"
 }
 
-resource "azurerm_app_service_plan" "plan" {
-  name                = "WebPlan03"
+resource "azurerm_service_plan" "Web_plan" {
+  name                = "webPlan01"
   location            = azurerm_resource_group.web_rg.location
   resource_group_name = azurerm_resource_group.web_rg.name
-  kind = "Linux"
-  reserved = true
+  os_type             = "Windows"
 
-  sku {
-    tier = "Basic"
-    size = "B1"
-  }
+  sku_name = "B1"
+
 }
-
-resource "azurerm_app_service" "app" {
-  name                = "RathoreeeWebApp03"
+resource "azurerm_app_service" "web_app" {
+  name                = "AryanRathoreWebApp0412"
   location            = azurerm_resource_group.web_rg.location
   resource_group_name = azurerm_resource_group.web_rg.name
-  app_service_plan_id = azurerm_app_service_plan.plan.id
+  app_service_plan_id = azurerm_service_plan.Web_plan.id
 
   site_config {
-    always_on        = true
-    linux_fx_version = "DOTNET|8.0" 
-}
+    always_on = true
+  }
+
   app_settings = {
     "WEBSITE_RUN_FROM_PACKAGE" = "1"
   }

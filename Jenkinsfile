@@ -3,7 +3,7 @@ pipeline {
     environment {
         AZURE_CREDENTIALS_ID = 'jenkins-pipeline-sp'
         RESOURCE_GROUP       = 'WebServiceRG'
-        APP_SERVICE_NAME     = 'RathoreeeWebApp03'
+        APP_SERVICE_NAME     = 'AryanRathoreWebApp0412'
         TF_WORKING_DIR       = '.'
     }
 

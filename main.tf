@@ -36,7 +36,6 @@ resource "azurerm_app_service_plan" "plan" {
     size = "B1"
   }
 
-  os_type = "Windows"
 }
 
 resource "azurerm_app_service" "app" {

@@ -48,7 +48,7 @@ resource "azurerm_app_service" "app" {
   site_config {
     always_on        = true
     linux_fx_version = "DOTNET|8.0" 
-
+}
   app_settings = {
     "WEBSITE_RUN_FROM_PACKAGE" = "1"
   }

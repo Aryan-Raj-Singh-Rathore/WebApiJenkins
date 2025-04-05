@@ -65,7 +65,6 @@ pipeline {
             steps {
                 withCredentials([azureServicePrincipal(credentialsId: AZURE_CREDENTIALS_ID)]) {
                     bat """
-                    az login --service-principal -u %AZURE_CLIENT_ID% -p %AZURE_CLIENT_SECRET% --tenant %AZURE_TENANT_ID%
                     powershell Compress-Archive -Path ./publish/* -DestinationPath ./publish.zip -Force
                     az webapp deployment source config-zip ^
                         --resource-group %RESOURCE_GROUP% ^

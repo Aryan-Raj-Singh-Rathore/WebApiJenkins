@@ -9,12 +9,17 @@ terraform {
 }
 
 provider "azurerm" {
-  subscription_id = "61bd38d2-51fa-4243-9689-7f55df510fc1"
-  tenant_id       = "b0b76d6e-14b7-4c08-8657-a19ef23b3b0b"
-  client_id       = "11af728d-4d93-4b23-9eb8-3102beba84ce"
-  client_secret   = "0WL8Q~~4Hq5jRNVTbBBxjnqDo6siu9DYxB6fPbWA"
+  subscription_id = var.subscription_id
+  tenant_id       = var.tenant_id
+  client_id       = var.client_id
+  client_secret   = var.client_secret
   features {}
 }
+
+variable "subscription_id" {}
+variable "tenant_id" {}
+variable "client_id" {}
+variable "client_secret" {}
 
 resource "azurerm_resource_group" "web_rg" {
   name     = "WebServiceRG"
@@ -30,7 +35,10 @@ resource "azurerm_app_service_plan" "plan" {
     tier = "Basic"
     size = "B1"
   }
+
+  os_type = "Windows"
 }
+
 resource "azurerm_app_service" "app" {
   name                = "RathoreeeWebApp03"
   location            = azurerm_resource_group.web_rg.location
@@ -39,7 +47,9 @@ resource "azurerm_app_service" "app" {
 
   site_config {
     always_on = true
+    dotnet_framework_version = "v6.0"  # Optional: specify your runtime
   }
+
   app_settings = {
     "WEBSITE_RUN_FROM_PACKAGE" = "1"
   }
